@@ -29,6 +29,6 @@ void CommandBase::init()
 	oi = new OI();
 	maindrive = new Drive();
 	shooter = new Shooter();
-	toplifter = new Lifter(LIFTER_TOP_PORT);
-	bottomlifter = new Lifter(LIFTER_BOTTOM_PORT);
+	toplifter = new Lifter(LIFTER_TOP_PORT, false);
+	bottomlifter = new Lifter(LIFTER_BOTTOM_PORT, true);
 }

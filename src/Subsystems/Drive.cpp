@@ -13,9 +13,9 @@ void Drive::InitDefaultCommand()
 	//SetDefaultCommand(new MySpecialCommand());
 }
 
-void Drive::FromJoystickInput(Joystick *_mLeft, Joystick *_mRight)
+void Drive::FromJoystickInput(double _mLeft, double _mRight)
 {
-	MainDrive->TankDrive(_mLeft, _mRight, false);
+	MainDrive->TankDrive(-1 * _mLeft, _mRight);
 }
 
 void Drive::Stop()
@@ -26,6 +26,7 @@ void Drive::Stop()
 void Drive::Enable()
 {
 	IsEnabled = true;
+	Stop();
 }
 
 void Drive::Disable()

@@ -16,7 +16,7 @@ private:
 public:
 	Drive();
 	void InitDefaultCommand();
-	void FromJoystickInput(Joystick *_mLeft, Joystick *_mRight);
+	void FromJoystickInput(double _mLeft, double _mRight);
 	void Stop();
 	void Enable();
 	void Disable();

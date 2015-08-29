@@ -19,7 +19,6 @@ private:
 		lw = LiveWindow::GetInstance();
 
 		// Setup main robot drive with tank from OI joysticks
-		CommandBase::maindrive->FromJoystickInput(CommandBase::oi->GetLeftJoystick(), CommandBase::oi->GetRightJoystick());
 	}
 	
 	void DisabledPeriodic()
@@ -51,19 +50,28 @@ private:
 
 	void TeleopPeriodic()
 	{
+		bool topLifterUp = CommandBase::oi->GetJoystick(JOYSTICK_TOP_LIFTER_PORT)->GetRawButton(JOYSTICK_TOP_LIFTER_BUTTON_UP);
+		bool topLifterDown = CommandBase::oi->GetJoystick(JOYSTICK_TOP_LIFTER_PORT)->GetRawButton(JOYSTICK_TOP_LIFTER_BUTTON_DOWN);
+		bool bottomLifterUp = CommandBase::oi->GetJoystick(JOYSTICK_BOTTOM_LIFTER_PORT)->GetRawButton(JOYSTICK_BOTTOM_LIFTER_BUTTON_UP);
+		bool bottomLifterDown = CommandBase::oi->GetJoystick(JOYSTICK_BOTTOM_LIFTER_PORT)->GetRawButton(JOYSTICK_BOTTOM_LIFTER_BUTTON_DOWN);
+
+		CommandBase::maindrive->FromJoystickInput(CommandBase::oi->GetLeftJoystick()->GetAxis(Joystick::AxisType::kYAxis), CommandBase::oi->GetRightJoystick()->GetAxis(Joystick::AxisType::kYAxis));
 		CommandBase::shooter->SetState(CommandBase::oi->GetJoystick(JOYSTICK_SHOOTER_PORT)->GetRawButton(JOYSTICK_SHOOTER_BUTTON));
-		CommandBase::toplifter->SetState(CommandBase::oi->GetJoystick(JOYSTICK_TOP_LIFTER_PORT)->GetRawButton(JOYSTICK_TOP_LIFTER_BUTTON_UP));
-		CommandBase::bottomlifter->SetState(CommandBase::oi->GetJoystick(JOYSTICK_BOTTOM_LIFTER_PORT)->GetRawButton(JOYSTICK_BOTTOM_LIFTER_BUTTON_UP));
+		if(topLifterUp && !topLifterDown)
+			CommandBase::toplifter->SetState(Lifter::State::UP);
+		else if(topLifterDown && !topLifterUp)
+			CommandBase::toplifter->SetState(Lifter::State::DOWN);
+		else
+			CommandBase::toplifter->SetState(Lifter::State::OFF);
+
+		if(bottomLifterUp && !bottomLifterDown)
+			CommandBase::bottomlifter->SetState(Lifter::State::UP);
+		else if(bottomLifterDown && !bottomLifterUp)
+			CommandBase::bottomlifter->SetState(Lifter::State::DOWN);
+		else
+			CommandBase::bottomlifter->SetState(Lifter::State::OFF);
 
 		Scheduler::GetInstance()->Run();
-	}
-
-	void TeleopEnd()
-	{
-		CommandBase::maindrive->Disable();
-		CommandBase::shooter->Disable();
-		CommandBase::toplifter->Disable();
-		CommandBase::bottomlifter->Disable();
 	}
 
 	void TestPeriodic()
